@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { X, Plus, QrCode } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 
 interface AddSensorFormProps {
   isOpen: boolean;
@@ -23,18 +22,22 @@ export default function AddSensorForm({ isOpen, onClose, onSensorAdded }: AddSen
     setIsSubmitting(true);
 
     try {
-      const { error: insertError } = await supabase.from('sensors').insert([
-        {
+      const res = await fetch('https://sensor-backend-sg59.onrender.com/api/sensors', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           name: formData.name,
           sensor_id: formData.sensor_id,
           location: formData.location,
-          temperature: 20 + Math.random() * 8,
-          humidity: 40 + Math.random() * 30,
-          is_active: true,
-        },
-      ]);
+        }),
+      });
 
-      if (insertError) throw insertError;
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Failed to add sensor');
+      }
 
       setFormData({ name: '', sensor_id: '', location: '' });
       onSensorAdded();
