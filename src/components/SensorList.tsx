@@ -4,9 +4,10 @@ import SensorCard from './SensorCard';
 interface SensorListProps {
   sensors: Sensor[];
   isLoading?: boolean;
+  onDelete: (id: string) => void; // Приймаємо функцію видалення
 }
 
-export default function SensorList({ sensors, isLoading }: SensorListProps) {
+export default function SensorList({ sensors, isLoading, onDelete }: SensorListProps) {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -54,7 +55,7 @@ export default function SensorList({ sensors, isLoading }: SensorListProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {sensors.map((sensor) => (
-        <SensorCard key={sensor.id} sensor={sensor} />
+        <SensorCard key={sensor.id} sensor={sensor} onDelete={onDelete} />
       ))}
     </div>
   );
