@@ -114,7 +114,7 @@ export default function AddSensorForm({ isOpen, onClose, onSensorAdded }: AddSen
               required
               value={formData.sensor_id}
               onChange={(e) => setFormData({ ...formData, sensor_id: e.target.value })}
-              placeholder="Enter unique sensor ID"
+              placeholder="e.g., SN-ABC123"
               className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
             />
           </div>
