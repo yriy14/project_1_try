@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Plus, QrCode } from 'lucide-react';
+import { X, Plus } from 'lucide-react';
 
 interface AddSensorFormProps {
   isOpen: boolean;
@@ -47,11 +47,6 @@ export default function AddSensorForm({ isOpen, onClose, onSensorAdded }: AddSen
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const generateRandomId = () => {
-    const id = `SN-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-    setFormData({ ...formData, sensor_id: id });
   };
 
   if (!isOpen) return null;
@@ -113,28 +108,15 @@ export default function AddSensorForm({ isOpen, onClose, onSensorAdded }: AddSen
             <label htmlFor="sensor_id" className="block text-sm font-medium text-gray-700 mb-1.5">
               Sensor ID
             </label>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                id="sensor_id"
-                required
-                value={formData.sensor_id}
-                onChange={(e) => setFormData({ ...formData, sensor_id: e.target.value })}
-                placeholder="e.g., SN-ABC123"
-                className="flex-1 px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-              />
-              <button
-                type="button"
-                onClick={generateRandomId}
-                className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl transition-colors flex items-center gap-2"
-                title="Generate Random ID"
-              >
-                <QrCode className="w-4 h-4" />
-              </button>
-            </div>
-            <p className="text-xs text-gray-500 mt-1.5">
-              Enter the sensor ID or generate a random one for testing
-            </p>
+            <input
+              type="text"
+              id="sensor_id"
+              required
+              value={formData.sensor_id}
+              onChange={(e) => setFormData({ ...formData, sensor_id: e.target.value })}
+              placeholder="Enter unique sensor ID"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+            />
           </div>
 
           {error && (
