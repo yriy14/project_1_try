@@ -1,3 +1,16 @@
+import { useEffect, useState } from 'react';
+
+export interface Sensor {
+  id: string;
+  name: string;
+  sensor_id: string;
+  location: string;
+  temperature: number;
+  humidity: number;
+  is_active: boolean;
+  last_updated: string;
+}
+
 export function useSensors() {
   const [sensors, setSensors] = useState<Sensor[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -23,7 +36,8 @@ export function useSensors() {
   useEffect(() => {
     fetchSensors();
 
-    const interval = setInterval(fetchSensors, 5 * 60 * 1000); // оновлення кожні 5 хв
+    // Оновлення даних кожні 5 хвилин
+    const interval = setInterval(fetchSensors, 5 * 60 * 1000);
 
     return () => clearInterval(interval);
   }, []);
