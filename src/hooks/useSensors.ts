@@ -24,7 +24,7 @@ export function useSensors() {
       if (!res.ok) throw new Error('Failed to fetch sensors');
 
       const data: Sensor[] = await res.json();
-      setSensors(data);
+      setSensors(data); // Тільки реальні дані з бекенду
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch sensors');
