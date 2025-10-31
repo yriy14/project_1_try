@@ -1,12 +1,13 @@
-import { Thermometer, Droplets, Wifi, WifiOff, Clock } from 'lucide-react';
+import { Thermometer, Droplets, Wifi, WifiOff, Clock, Trash2 } from 'lucide-react';
 import { Sensor } from '../lib/supabase';
 import { getComfortStatus, formatTimeAgo } from '../utils/sensorUtils';
 
 interface SensorCardProps {
   sensor: Sensor;
+  onDelete: (id: string) => void;
 }
 
-export default function SensorCard({ sensor }: SensorCardProps) {
+export default function SensorCard({ sensor, onDelete }: SensorCardProps) {
   const comfortStatus = getComfortStatus(sensor.temperature, sensor.humidity);
 
   return (
@@ -21,35 +22,24 @@ export default function SensorCard({ sensor }: SensorCardProps) {
             <span className="font-bold">{comfortStatus.icon}</span>
             {comfortStatus.label}
           </div>
-          {sensor.is_active ? (
-            <Wifi className="w-4 h-4 text-emerald-500" />
-          ) : (
-            <WifiOff className="w-4 h-4 text-gray-400" />
-          )}
+          {sensor.is_active ? <Wifi className="w-4 h-4 text-emerald-500" /> : <WifiOff className="w-4 h-4 text-gray-400" />}
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4 mb-4">
         <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-4">
           <div className="flex items-center gap-2 mb-2">
             <Thermometer className="w-4 h-4 text-orange-600" />
             <span className="text-xs font-medium text-orange-900">Temperature</span>
           </div>
-          <div className="text-3xl font-bold text-orange-900">
-            {sensor.temperature}°
-            <span className="text-lg font-normal text-orange-700">C</span>
-          </div>
+          <div className="text-3xl font-bold text-orange-900">{sensor.temperature}°<span className="text-lg font-normal text-orange-700">C</span></div>
         </div>
-
         <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-4">
           <div className="flex items-center gap-2 mb-2">
             <Droplets className="w-4 h-4 text-blue-600" />
             <span className="text-xs font-medium text-blue-900">Humidity</span>
           </div>
-          <div className="text-3xl font-bold text-blue-900">
-            {sensor.humidity}
-            <span className="text-lg font-normal text-blue-700">%</span>
-          </div>
+          <div className="text-3xl font-bold text-blue-900">{sensor.humidity}<span className="text-lg font-normal text-blue-700">%</span></div>
         </div>
       </div>
 
@@ -58,8 +48,19 @@ export default function SensorCard({ sensor }: SensorCardProps) {
         <span>Updated {formatTimeAgo(sensor.last_updated)}</span>
       </div>
 
-      <div className="mt-3 pt-3 border-t border-gray-100">
+      <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
         <p className="text-xs text-gray-400 font-mono">ID: {sensor.sensor_id}</p>
+        <button
+          onClick={() => {
+            if (confirm('Are you sure you want to delete this sensor?')) {
+              onDelete(sensor.id);
+            }
+          }}
+          className="flex items-center gap-1 text-red-500 hover:text-red-700 text-sm"
+        >
+          <Trash2 className="w-4 h-4" />
+          Delete
+        </button>
       </div>
     </div>
   );
