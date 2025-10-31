@@ -11,6 +11,21 @@ function App() {
 
   const activeSensors = sensors.filter((s) => s.is_active);
 
+  // Функція видалення сенсора
+  const handleDeleteSensor = async (id: string) => {
+    try {
+      const res = await fetch(`https://sensor-backend-sg59.onrender.com/api/sensors/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) throw new Error('Failed to delete sensor');
+
+      refetch(); // Оновлюємо список після видалення
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to delete sensor');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -74,7 +89,7 @@ function App() {
 
         <div className="space-y-6">
           {sensors.length > 0 && <RecommendationPanel sensors={sensors} />}
-          <SensorList sensors={sensors} isLoading={isLoading} />
+          <SensorList sensors={sensors} isLoading={isLoading} onDelete={handleDeleteSensor} />
         </div>
       </div>
 
