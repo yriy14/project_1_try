@@ -1,6 +1,3 @@
-import { useEffect, useState } from 'react';
-import { supabase, Sensor } from '../lib/supabase';
-
 export function useSensors() {
   const [sensors, setSensors] = useState<Sensor[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -9,14 +6,12 @@ export function useSensors() {
   const fetchSensors = async () => {
     try {
       setIsLoading(true);
-      const { data, error: fetchError } = await supabase
-        .from('sensors')
-        .select('*')
-        .order('created_at', { ascending: false });
 
-      if (fetchError) throw fetchError;
+      const res = await fetch('https://sensor-backend-sg59.onrender.com/api/sensors');
+      if (!res.ok) throw new Error('Failed to fetch sensors');
 
-      setSensors(data || []);
+      const data: Sensor[] = await res.json();
+      setSensors(data);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch sensors');
@@ -28,20 +23,9 @@ export function useSensors() {
   useEffect(() => {
     fetchSensors();
 
-    const channel = supabase
-      .channel('sensors-changes')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'sensors' },
-        () => {
-          fetchSensors();
-        }
-      )
-      .subscribe();
+    const interval = setInterval(fetchSensors, 5 * 60 * 1000); // оновлення кожні 5 хв
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => clearInterval(interval);
   }, []);
 
   return { sensors, isLoading, error, refetch: fetchSensors };
